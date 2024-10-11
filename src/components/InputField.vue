@@ -4,7 +4,7 @@ export default {
   props: {
     name: String,
     placeholder: String,
-    errorMessage: String,
+    errorText: String,
     modelValue: String,
     hasError: Boolean,
   },
@@ -50,7 +50,7 @@ export default {
     </div>
 
     <p class="help is-danger" data-cy="ErrorMessage" v-if="hasError">
-      {{ errorMessage }}
+      {{ errorText }}
     </p>
   </div>
 </template>
