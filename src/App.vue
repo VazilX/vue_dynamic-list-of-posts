@@ -14,6 +14,11 @@ export default {
       inSidebar: "",
     };
   },
+  methods: {
+    closeSidebar() {
+      this.inSidebar = "";
+    },
+  },
 };
 </script>
 
@@ -21,7 +26,7 @@ export default {
   <main>
     <PostsList v-model="inSidebar" />
     <Sidebar :isOpen="inSidebar !== ''">
-      <AddPost />
+      <AddPost @close="closeSidebar" />
     </Sidebar>
   </main>
 </template>

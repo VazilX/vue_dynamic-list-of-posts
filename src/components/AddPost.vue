@@ -12,9 +12,54 @@ export default {
     return {
       newPostTitle: "",
       newPostText: "",
-      isTitleHasErr: false,
-      isTextHasErr: false,
+      hasErrorTitle: false,
+      hasErrorText: false,
     };
+  },
+  emits: ["close"],
+  methods: {
+    createNewPost() {
+      if (!this.validation()) {
+        return;
+      }
+    },
+
+    validation() {
+      console.log("validation start");
+      let hasErr = false;
+
+      switch ("") {
+        case this.newPostTitle:
+          hasErr = true;
+          this.hasErrorTitle = true;
+
+        case this.newPostText:
+          hasErr = true;
+          this.hasErrorText = true;
+          break;
+
+        default:
+          hasErr = false;
+          break;
+      }
+
+      console.log("validation finish");
+      console.log("hasErr", hasErr);
+      return !hasErr;
+    },
+
+    closeSidebar() {
+      this.reset();
+
+      this.$emit("close");
+    },
+
+    reset() {
+      this.newPostTitle = "";
+      this.newPostText = "";
+      this.hasErrorTitle = false;
+      this.hasErrorText = false;
+    },
   },
 };
 </script>
@@ -23,17 +68,17 @@ export default {
   <div className="content">
     <h2>Create new post</h2>
 
-    <form>
+    <form @submit.prevent="createNewPost">
       <InputField
+        v-model.trim="newPostTitle"
+        :hasError="hasErrorTitle"
         name="title"
         placeholder="Post title"
-        v-model="newPostTitle"
-        errorMessage="Title is required"
-        :hasError="isTitleHasErr"
+        errorText="Title is required"
       />
       <TextAreaField
-        v-model="newPostText"
-        :hasError="isTextHasErr"
+        v-model.trim="newPostText"
+        :hasError="hasErrorText"
         name="postText"
         title="Write Post Body"
         placeholder="Post body"
@@ -45,7 +90,11 @@ export default {
           <button type="submit" className="button is-link">Save</button>
         </div>
         <div className="control">
-          <button type="reset" className="button is-link is-light">
+          <button
+            @click="closeSidebar"
+            type="reset"
+            className="button is-link is-light"
+          >
             Cancel
           </button>
         </div>
