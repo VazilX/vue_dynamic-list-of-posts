@@ -5,5 +5,9 @@ export const getUserPosts = (userId) => {
 };
 
 export const getPosts = () => {
-  return client.get('/posts');
+  return client.get("/posts");
+};
+
+export const createPosts = ({ body, title, userId }) => {
+  return client.post("/posts", { body, title, userId });
 };

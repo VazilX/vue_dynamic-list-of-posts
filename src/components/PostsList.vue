@@ -5,8 +5,8 @@ import Message from "./Message.vue";
 
 export default {
   name: "PostsList",
-  props: { modalValue: String },
-  emits: ["update:modelValue"],
+  props: { modalValue: String, postList: Array },
+  emits: ["update:modelValue", 'updatePostList'],
   components: {
     PostLoader,
     Message,
@@ -14,7 +14,6 @@ export default {
 
   data() {
     return {
-      postList: [],
       isLoaded: false,
       errorMassage: "",
     };
@@ -27,7 +26,7 @@ export default {
 
     getUserPosts(1546)
       .then(({ data }) => {
-        this.postList = data;
+        this.$emit('updatePostList', data)
       })
       .catch((err) => {
         console.error(err);
@@ -46,7 +45,13 @@ export default {
       <div class="block">
         <div class="block is-flex is-justify-content-space-between">
           <p class="title">Posts</p>
-          <button type="button" class="button is-link" @click="$emit('update:modelValue', 'creatingPost')">Add New Post</button>
+          <button
+            type="button"
+            class="button is-link"
+            @click="$emit('update:modelValue', 'creatingPost')"
+          >
+            Add New Post
+          </button>
         </div>
 
         <PostLoader v-if="isLoaded" />

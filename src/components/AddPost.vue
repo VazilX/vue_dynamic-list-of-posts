@@ -1,6 +1,7 @@
 <script>
 import TextAreaField from "./TextAreaField.vue";
 import InputField from "./InputField.vue";
+import { createPosts } from "@/api/post";
 
 export default {
   name: "AddPost",
@@ -16,16 +17,27 @@ export default {
       hasErrorText: false,
     };
   },
-  emits: ["close"],
+  emits: ["close, updatePostList"],
   methods: {
     createNewPost() {
       if (!this.validation()) {
         return;
       }
+
+      const sendData = {
+        body: this.newPostText,
+        title: this.newPostTitle,
+        userId: 1546,
+      };
+
+      createPosts(sendData).then(({ data }) => {
+        this.$emit('updatePostList', data);
+      });
+
+      this.reset()
     },
 
     validation() {
-      console.log("validation start");
       let hasErr = false;
 
       switch ("") {
@@ -43,8 +55,6 @@ export default {
           break;
       }
 
-      console.log("validation finish");
-      console.log("hasErr", hasErr);
       return !hasErr;
     },
 

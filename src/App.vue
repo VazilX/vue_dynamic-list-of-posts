@@ -12,6 +12,7 @@ export default {
   data() {
     return {
       inSidebar: "",
+      postList: [],
     };
   },
   methods: {
@@ -24,9 +25,13 @@ export default {
 
 <template>
   <main>
-    <PostsList v-model="inSidebar" />
+    <PostsList
+      v-model="inSidebar"
+      :postList="postList"
+      @updatePostList="postList = $event"
+    />
     <Sidebar :isOpen="inSidebar !== ''">
-      <AddPost @close="closeSidebar" />
+      <AddPost @close="closeSidebar" @updatePostList="postList.push($event)" />
     </Sidebar>
   </main>
 </template>
