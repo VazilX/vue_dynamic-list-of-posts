@@ -1,6 +1,7 @@
 <script>
 export default {
   name: "Comment",
+  emits: ["delateComment"],
   props: {
     comment: Object,
   },
@@ -15,6 +16,7 @@ export default {
         type="button"
         class="delete is-small"
         aria-label="delete"
+        @click="$emit('delateComment', comment.id)"
       ></button>
     </div>
     <div class="message-body">{{ comment.body }}</div>
