@@ -4,6 +4,7 @@ import Comment from "./Comment.vue";
 import PostPreview from "./PostPreview.vue";
 import NoCommentsYet from "./NoCommentsYet.vue";
 import Loader from "./Loader.vue";
+import Message from "./Message.vue";
 
 export default {
   name: "PostDetails",
@@ -12,6 +13,7 @@ export default {
     Comment,
     NoCommentsYet,
     Loader,
+    Message,
   },
   props: {
     currentPost: Object,
@@ -20,6 +22,7 @@ export default {
     return {
       commentsList: [],
       isCommentsLoading: false,
+      errorMessage: "",
     };
   },
   watch: {
@@ -29,7 +32,7 @@ export default {
       handler() {
         this.downloadCommentsList();
       },
-    }
+    },
   },
   methods: {
     downloadCommentsList() {
@@ -40,7 +43,9 @@ export default {
           this.commentsList = data;
           console.log(data);
         })
-        .catch(() => {})
+        .catch(() => {
+          this.errorMessage = "Didn't able to download comments";
+        })
         .finally(() => {
           this.isCommentsLoading = false;
         });
@@ -56,7 +61,9 @@ export default {
             this.commentsList.splice(index, 1);
           }
         })
-        .catch(() => {})
+        .catch(() => {
+          this.errorMessage = "Didn't able to delete comments";
+        })
         .finally(() => {});
     },
   },
@@ -66,7 +73,7 @@ export default {
 <template>
   <PostPreview :currentPost="currentPost" />
   <Loader v-if="isCommentsLoading" />
-  <template v-else>
+  <template v-else-if="errorMessage === ''">
     <Comment
       v-if="commentsList.length !== 0"
       v-for="comment of commentsList"
@@ -76,6 +83,14 @@ export default {
     />
     <NoCommentsYet v-else />
   </template>
+
+  <Message v-if="errorMessage !== ''">
+    <template #head>
+      <p>Error</p>
+    </template>
+    {{ console.log("errorMessage", errorMessage) }}
+    <p>{{ errorMessage }}</p>
+  </Message>
 </template>
 
 <style></style>
