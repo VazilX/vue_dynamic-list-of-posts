@@ -29,7 +29,10 @@ export default {
     downloadCommentsList() {
       getPostComments(this.currentPost.id)
         .then(({ data }) => {
-          this.commentsList = data;
+          if (JSON.stringify(this.commentsList) !== JSON.stringify(data)) {
+            this.commentsList = data;
+            console.log(data);
+          }
         })
         .catch(() => {})
         .finally(() => {});
@@ -43,6 +46,7 @@ export default {
   <Comment
     v-if="commentsList.length !== 0"
     v-for="comment of commentsList"
+    :key="comment.id"
     :comment="comment"
   />
   <NoCommentsYet v-else />
