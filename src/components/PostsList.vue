@@ -5,12 +5,12 @@ import Message from "./Message.vue";
 
 export default {
   name: "PostsList",
-  props: { modalValue: String, postList: Array },
-  emits: ["update:modelValue", 'updatePostList'],
   components: {
     PostLoader,
     Message,
   },
+  props: { modalValue: String, postList: Array, currentPost: Object },
+  emits: ["update:modelValue", "updatePostList", "clickCurrentPost"],
 
   data() {
     return {
@@ -26,7 +26,7 @@ export default {
 
     getUserPosts(1546)
       .then(({ data }) => {
-        this.$emit('updatePostList', data)
+        this.$emit("updatePostList", data);
       })
       .catch((err) => {
         console.error(err);
@@ -74,7 +74,22 @@ export default {
                 <td>{{ post.id }}</td>
                 <td>{{ post.title }}</td>
                 <td class="has-text-right is-vcentered">
-                  <button type="button" class="button is-link">Open</button>
+                  <button
+                    v-if="currentPost?.id !== post.id"
+                    @click="$emit('clickCurrentPost', post)"
+                    type="button"
+                    class="button is-link"
+                  >
+                    Open
+                  </button>
+                  <button
+                    v-else
+                    @click="$emit('clickCurrentPost', null)"
+                    type="button"
+                    class="button is-link is-light"
+                  >
+                    Close
+                  </button>
                 </td>
               </tr>
             </tbody>
