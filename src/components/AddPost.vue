@@ -17,7 +17,7 @@ export default {
       hasErrorText: false,
     };
   },
-  emits: ["close, updatePostList"],
+  emits: ["close", "updatePostList"],
   methods: {
     createNewPost() {
       if (!this.validation()) {
@@ -31,10 +31,10 @@ export default {
       };
 
       createPosts(sendData).then(({ data }) => {
-        this.$emit('updatePostList', data);
+        this.$emit("updatePostList", data);
       });
 
-      this.reset()
+      this.reset();
     },
 
     validation() {
@@ -83,8 +83,10 @@ export default {
         v-model.trim="newPostTitle"
         :hasError="hasErrorTitle"
         name="title"
+        title="Title"
         placeholder="Post title"
         errorText="Title is required"
+        @removeErr="hasErrorTitle = false"
       />
       <TextAreaField
         v-model.trim="newPostText"
@@ -93,17 +95,18 @@ export default {
         title="Write Post Body"
         placeholder="Post body"
         errorText="Body is required"
+        @removeErr="hasErrorText = false"
       />
 
       <div className="field is-grouped">
         <div className="control">
           <button type="submit" className="button is-link">Save</button>
         </div>
-        <div className="control">
+        <div class="control">
           <button
             @click="closeSidebar"
             type="reset"
-            className="button is-link is-light"
+            class="button is-link is-light"
           >
             Cancel
           </button>

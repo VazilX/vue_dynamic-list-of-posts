@@ -9,7 +9,7 @@ export default {
     errorText: String,
     hasError: Boolean,
   },
-  emits: ["update:modelValue"],
+  emits: ["update:modelValue", "removeErr"],
 };
 </script>
 
@@ -25,6 +25,7 @@ export default {
         :placeholder="placeholder"
         :value="modelValue"
         @change="$emit('update:modelValue', $event.target.value)"
+        @input="$emit('removeErr')"
         :class="{ 'is-danger': hasError }"
         class="textarea"
       ></textarea>

@@ -5,6 +5,8 @@ import PostPreview from "./PostPreview.vue";
 import NoCommentsYet from "./NoCommentsYet.vue";
 import Loader from "./Loader.vue";
 import Message from "./Message.vue";
+import WriteCommentBtn from "./WriteCommentBtn.vue";
+import AddComment from "./AddComment.vue";
 
 export default {
   name: "PostDetails",
@@ -14,6 +16,8 @@ export default {
     NoCommentsYet,
     Loader,
     Message,
+    WriteCommentBtn,
+    AddComment,
   },
   props: {
     currentPost: Object,
@@ -23,6 +27,7 @@ export default {
       commentsList: [],
       isCommentsLoading: false,
       errorMessage: "",
+      isWritingComment: false,
     };
   },
   watch: {
@@ -30,6 +35,7 @@ export default {
       immediate: true,
       deep: true,
       handler() {
+        this.isWritingComment = false;
         this.downloadCommentsList();
       },
     },
@@ -41,7 +47,6 @@ export default {
       getPostComments(this.currentPost.id)
         .then(({ data }) => {
           this.commentsList = data;
-          console.log(data);
         })
         .catch(() => {
           this.errorMessage = "Didn't able to download comments";
@@ -66,6 +71,14 @@ export default {
         })
         .finally(() => {});
     },
+
+    showWriteComment() {
+      this.isWritingComment = true;
+    },
+
+    cancelWritingComment() {
+      this.isWritingComment = false;
+    },
   },
 };
 </script>
@@ -74,14 +87,24 @@ export default {
   <PostPreview :currentPost="currentPost" />
   <Loader v-if="isCommentsLoading" />
   <template v-else-if="errorMessage === ''">
-    <Comment
-      v-if="commentsList.length !== 0"
-      v-for="comment of commentsList"
-      :key="comment.id"
-      :comment="comment"
-      @delateComment="removeComment"
-    />
-    <NoCommentsYet v-else />
+    <template v-if="!isWritingComment">
+      <Comment
+        v-if="commentsList.length !== 0"
+        v-for="comment of commentsList"
+        :key="comment.id"
+        :comment="comment"
+        @delateComment="removeComment"
+      />
+      <NoCommentsYet v-else />
+      <WriteCommentBtn @click="showWriteComment" />
+    </template>
+    <template v-else>
+      <AddComment
+        @cancel="cancelWritingComment"
+        :postId="currentPost.id"
+        @updateCommentsList="commentsList.push($event)"
+      />
+    </template>
   </template>
 
   <Message v-if="errorMessage !== ''">

@@ -17,11 +17,9 @@ export default {
     class="tile is-parent is-8-desktop Sidebar"
     :class="{ 'Sidebar--open': isOpen }"
   >
-    <div class="tile is-child box is-success ">
-      <div class="tile is-child box is-success ">
-        <div class="content">
-          <slot></slot>
-        </div>
+    <div class="tile is-child box is-success">
+      <div class="content">
+        <slot></slot>
       </div>
     </div>
   </div>

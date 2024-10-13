@@ -7,8 +7,9 @@ export default {
     errorText: String,
     modelValue: String,
     hasError: Boolean,
+    title: String,
   },
-  emits: ["update:modelValue"],
+  emits: ["update:modelValue", 'removeErr'],
   data() {
     return {};
   },
@@ -21,11 +22,9 @@ export default {
       class="label input-field__label"
       :htmlFor="`comment-author-name-${name}`"
     >
-      {{ name }}
+      {{ title }}
     </label>
-    <div
-      class="control has-icons-left has-icons-right"
-    >
+    <div class="control has-icons-left has-icons-right">
       <input
         type="text"
         :name="name"
@@ -35,9 +34,16 @@ export default {
         :class="{ 'is-danger': hasError }"
         :value="modelValue"
         @change="$emit('update:modelValue', $event.target.value)"
+        @input="$emit('removeErr')"
       />
       <span class="icon is-small is-left">
-        <i class="fas fa-user"></i>
+        <i
+          class="fas"
+          :class="{
+            'fa-user': !name.toLowerCase().includes('email'),
+            'fa-envelope': name.toLowerCase().includes('email'),
+          }"
+        ></i>
       </span>
 
       <span
