@@ -1,4 +1,5 @@
 <script>
+import { createPosts, updatePost } from "./api/post";
 import AddPost from "./components/AddPost.vue";
 import PostDetails from "./components/PostDetails.vue";
 import PostsList from "./components/PostsList.vue";
@@ -12,15 +13,23 @@ export default {
     PostDetails,
   },
   data() {
-    return {
-      inSidebar: "",
-      postList: [],
-      currentPost: null,
-    };
+    return {};
+  },
+  computed: {
+    inSidebar() {
+      return this.$store.state.inSidebar;
+    },
+  },
+  watch: {
+    inSidebar() {
+      if (this.inSidebar === "" || this.inSidebar === "creatingPost") {
+        this.$store.commit("setCurrentPost", null);
+      }
+    },
   },
   methods: {
     closeSidebar() {
-      this.inSidebar = "";
+      this.$store.commit("setInSidebar", "");
     },
 
     clickCurrentPost(event) {
@@ -32,6 +41,17 @@ export default {
         this.inSidebar = "";
       }
     },
+
+    creatingPost(e) {
+      createPosts(e).then(({ data }) => {
+        this.postList.push(data);
+        this.clickCurrentPost(data);
+      });
+    },
+
+    updatingPost() {
+      console.log("VVVVVVVVVVVV");
+    },
   },
 };
 </script>
@@ -40,23 +60,17 @@ export default {
   <main class="section">
     <div class="container">
       <div class="tile is-ancestor custom-container">
-        <PostsList
-          v-model="inSidebar"
-          :postList="postList"
-          :currentPost="currentPost"
-          @updatePostList="postList = $event"
-          @clickCurrentPost="clickCurrentPost"
-        />
+        <PostsList />
+
         <Sidebar :isOpen="inSidebar !== ''">
           <AddPost
-            v-if="inSidebar === 'creatingPost'"
-            @close="closeSidebar"
-            @updatePostList="postList.push($event)"
+            v-if="inSidebar === 'creatingPost' || inSidebar === 'updatingPost'"
+            :title="
+              inSidebar === 'creatingPost' ? 'Create new post' : 'Post editing'
+            "
           />
-          <PostDetails
-            v-if="inSidebar === 'postDetails'"
-            :currentPost="currentPost"
-          />
+
+          <PostDetails v-if="inSidebar === 'postDetails'" />
         </Sidebar>
       </div>
     </div>
@@ -69,7 +83,6 @@ export default {
   flex-shrink: 1;
   flex-basis: 0;
 }
-
 
 @media (min-width: 769px) {
   .tile:not(.is-child) {

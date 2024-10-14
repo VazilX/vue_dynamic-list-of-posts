@@ -9,33 +9,45 @@ export default {
     InputField,
     TextAreaField,
   },
+  props: {
+    title: String,
+  },
   data() {
     return {
-      newPostTitle: "",
-      newPostText: "",
+      newPostTitle: this.$store.state.currentPost?.title || "",
+      newPostText: this.$store.state.currentPost?.body || "",
       hasErrorTitle: false,
       hasErrorText: false,
     };
   },
-  emits: ["close", "updatePostList"],
   methods: {
-    createNewPost() {
+    send() {
       if (!this.validation()) {
         return;
       }
-
       const sendData = {
         body: this.newPostText,
         title: this.newPostTitle,
         userId: 1546,
+        postId: this.currentPost?.id,
       };
 
-      createPosts(sendData).then(({ data }) => {
-        this.$emit("updatePostList", data);
-      });
-
-      this.reset();
+      if (this.$store.state.inSidebar === "creatingPost") {
+        this.creatingPost(sendData);
+      } else {
+        this.updatePost(sendData);
+      }
     },
+
+    creatingPost(e) {
+      createPosts(e).then(({ data }) => {
+        this.$store.commit("addPostList", data);
+        this.$store.commit("setCurrentPost", data);
+        this.$store.commit("setInSidebar", "postDetails");
+      });
+    },
+
+    updatePost(e) {},
 
     validation() {
       let hasErr = false;
@@ -61,7 +73,7 @@ export default {
     closeSidebar() {
       this.reset();
 
-      this.$emit("close");
+      this.$store.commit("setInSidebar", "");
     },
 
     reset() {
@@ -76,9 +88,9 @@ export default {
 
 <template>
   <div className="content">
-    <h2>Create new post</h2>
+    <h2>{{ title }}</h2>
 
-    <form @submit.prevent="createNewPost">
+    <form @submit.prevent="send">
       <InputField
         v-model.trim="newPostTitle"
         :hasError="hasErrorTitle"

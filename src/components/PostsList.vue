@@ -9,8 +9,7 @@ export default {
     PostLoader,
     Message,
   },
-  props: { modalValue: String, postList: Array, currentPost: Object },
-  emits: ["update:modelValue", "updatePostList", "clickCurrentPost"],
+  props: { modalValue: String },
 
   data() {
     return {
@@ -26,7 +25,7 @@ export default {
 
     getUserPosts(1546)
       .then(({ data }) => {
-        this.$emit("updatePostList", data);
+        this.$store.commit("addPostList", data);
       })
       .catch((err) => {
         console.error(err);
@@ -35,6 +34,17 @@ export default {
       .finally(() => {
         this.isLoaded = false;
       });
+  },
+  methods: {
+    openPost(post) {
+      this.$store.commit("setCurrentPost", post);
+      this.$store.commit("setInSidebar", "postDetails");
+    },
+
+    closePost() {
+      this.$store.commit('setCurrentPost', null)
+      this.$store.commit("setInSidebar", "");
+    },
   },
 };
 </script>
@@ -48,7 +58,7 @@ export default {
           <button
             type="button"
             class="button is-link"
-            @click="$emit('update:modelValue', 'creatingPost')"
+            @click="$store.commit('setInSidebar', 'creatingPost')"
           >
             Add New Post
           </button>
@@ -57,7 +67,7 @@ export default {
         <PostLoader v-if="isLoaded" />
 
         <template v-else-if="errorMassage === ''">
-          <p v-if="postList.length === 0">No posts yet.</p>
+          <p v-if="$store.state.postList.length === 0">No posts yet.</p>
           <table
             v-else
             class="table is-fullwidth is-striped is-hoverable is-narrow"
@@ -70,13 +80,13 @@ export default {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="post of postList" :key="post.id">
+              <tr v-for="post of $store.state.postList" :key="post.id">
                 <td>{{ post.id }}</td>
                 <td>{{ post.title }}</td>
                 <td class="has-text-right is-vcentered">
                   <button
-                    v-if="currentPost?.id !== post.id"
-                    @click="$emit('clickCurrentPost', post)"
+                    v-if="$store.state.currentPost?.id !== post.id"
+                    @click="openPost(post)"
                     type="button"
                     class="button is-link"
                   >
@@ -84,7 +94,7 @@ export default {
                   </button>
                   <button
                     v-else
-                    @click="$emit('clickCurrentPost', null)"
+                    @click="closePost"
                     type="button"
                     class="button is-link is-light"
                   >

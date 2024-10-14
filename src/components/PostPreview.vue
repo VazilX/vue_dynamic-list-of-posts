@@ -1,8 +1,10 @@
 <script>
 export default {
   name: "PostPreview",
-  props: {
-    currentPost: Object,
+  computed: {
+    currentPost() {
+      return this.$store.state.currentPost;
+    },
   },
   data() {
     return {};
@@ -17,14 +19,18 @@ export default {
     >
       <h2>{{ `#${currentPost.id}: ${currentPost.title}` }}</h2>
       <div className="is-flex">
-        <span className="icon is-small is-right is-clickable">
-          <i className="fas fa-pen-to-square"></i>
-        </span>
-        <span
-          className="icon is-small is-right has-text-danger is-clickable ml-3"
-        >
-          <i className="fas fa-trash"></i>
-        </span>
+        <button type="button" @click="">
+          <span className="icon is-small is-right is-clickable">
+            <i className="fas fa-pen-to-square"></i>
+          </span>
+        </button>
+        <button type="button">
+          <span
+            className="icon is-small is-right has-text-danger is-clickable ml-3"
+          >
+            <i className="fas fa-trash"></i>
+          </span>
+        </button>
       </div>
     </div>
     <p data-cy="PostBody">{{ currentPost.body }}</p>

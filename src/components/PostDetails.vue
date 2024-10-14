@@ -19,9 +19,6 @@ export default {
     WriteCommentBtn,
     AddComment,
   },
-  props: {
-    currentPost: Object,
-  },
   data() {
     return {
       commentsList: [],
@@ -29,6 +26,11 @@ export default {
       errorMessage: "",
       isWritingComment: false,
     };
+  },
+  computed: {
+    currentPost() {
+      return this.$store.state.currentPost;
+    }
   },
   watch: {
     currentPost: {
@@ -84,7 +86,7 @@ export default {
 </script>
 
 <template>
-  <PostPreview :currentPost="currentPost" />
+  <PostPreview />
   <Loader v-if="isCommentsLoading" />
   <template v-else-if="errorMessage === ''">
     <template v-if="!isWritingComment">
