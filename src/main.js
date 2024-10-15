@@ -11,6 +11,7 @@ const store = createStore({
       inSidebar: "",
       postList: [],
       currentPost: null,
+      userId: null,
     };
   },
 
@@ -45,6 +46,11 @@ const store = createStore({
 
     setCurrentPost(state, newPost) {
       state.currentPost = newPost;
+    },
+
+    setUserId(state, newUserId) {
+      state.userId = newUserId;
+      console.log('AAAAAAAAAAAAAAAAAA');
     },
   },
 });

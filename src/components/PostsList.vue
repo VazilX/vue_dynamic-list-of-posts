@@ -2,6 +2,7 @@
 import { getUserPosts } from "@/api/post";
 import PostLoader from "./PostLoader.vue";
 import Message from "./Message.vue";
+import { nextTick } from "vue";
 
 export default {
   name: "PostsList",
@@ -10,17 +11,20 @@ export default {
     Message,
   },
   props: { modalValue: String },
-
   data() {
     return {
       isLoaded: false,
       errorMassage: "",
     };
   },
+
   mounted() {
     this.isLoaded = true;
 
-    getUserPosts(1546)
+    console.log("this.$store.state.userId", this.$store.state.userId);
+    console.log("this.$store.state", this.$store.state);
+
+    getUserPosts(this.$store.state.userId)
       .then(({ data }) => {
         this.$store.commit("addPostList", data);
       })

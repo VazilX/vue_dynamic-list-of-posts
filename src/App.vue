@@ -1,83 +1,53 @@
 <script>
-import { createPosts } from "./api/post";
-import AddPost from "./components/AddPost.vue";
-import PostDetails from "./components/PostDetails.vue";
-import PostsList from "./components/PostsList.vue";
-import Sidebar from "./components/Sidebar.vue";
+import { getUser } from "./api/users";
+import { getLocaleStorage } from "./utils/getLocaleStorage";
+import Login from "./components/Login.vue";
+import MainContent from "./components/MainContent.vue";
+import { nextTick } from "vue";
 
 export default {
+  name: "App",
   components: {
-    PostsList,
-    Sidebar,
-    AddPost,
-    PostDetails,
+    Login,
+    MainContent,
   },
   data() {
-    return {};
+    return {
+      needRegistration: true,
+    };
   },
-  computed: {
-    inSidebar() {
-      return this.$store.state.inSidebar;
-    },
+  beforeMount() {
+    const user = getLocaleStorage("user");
+
+    if (user) {
+      this.gettingUser(user.id);
+    } else {
+      this.needRegistration = true;
+    }
   },
-  watch: {
-    inSidebar() {
-      if (this.inSidebar === "" || this.inSidebar === "creatingPost") {
-        this.$store.commit("setCurrentPost", null);
-      }
-    },
-  },
+
   methods: {
-    closeSidebar() {
-      this.$store.commit("setInSidebar", "");
-    },
-
-    clickCurrentPost(event) {
-      this.currentPost = event;
-
-      if (event) {
-        this.inSidebar = "postDetails";
-      } else {
-        this.inSidebar = "";
-      }
+    gettingUser(id) {
+      getUser(id)
+        .then(({ data }) => {
+          if (data) {
+            this.$store.commit("setUserId", data.id);
+            this.needRegistration = false;
+          } else {
+            this.needRegistration = true;
+          }
+        })
+        .catch((err) => {
+          console.log("err", err);
+        });
     },
   },
 };
 </script>
 
 <template>
-  <main class="section">
-    <div class="container">
-      <div class="tile is-ancestor custom-container">
-        <PostsList />
-
-        <Sidebar :isOpen="inSidebar !== ''">
-          <AddPost
-            v-if="inSidebar === 'creatingPost' || inSidebar === 'updatingPost'"
-            :title="
-              inSidebar === 'creatingPost' ? 'Create new post' : 'Post editing'
-            "
-          />
-
-          <PostDetails v-if="inSidebar === 'postDetails'" />
-        </Sidebar>
-      </div>
-    </div>
-  </main>
+  <Login v-if="needRegistration" @gettingUser="gettingUser" />
+  <MainContent v-else />
 </template>
 
-<style>
-.tile {
-  flex-grow: 1;
-  flex-shrink: 1;
-  flex-basis: 0;
-}
-
-@media (min-width: 769px) {
-  .tile:not(.is-child) {
-    display: flex;
-    align-items: stretch;
-    flex-grow: 1;
-  }
-}
-</style>
+<style></style>

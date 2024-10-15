@@ -28,7 +28,7 @@ export default {
       const sendData = {
         body: this.newPostText,
         title: this.newPostTitle,
-        userId: 1546,
+        userId: this.$store.state.userId,
         postId: this.$store.state.currentPost?.id,
       };
 
