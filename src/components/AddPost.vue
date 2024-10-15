@@ -76,10 +76,12 @@ export default {
       return !hasErr;
     },
 
-    closeSidebar() {
-      this.reset();
-
-      this.$store.commit("setInSidebar", "");
+    cancel() {
+      if (this.$store.state.inSidebar === "creatingPost") {
+        this.$store.commit("setInSidebar", "");
+      } else {
+        this.$store.commit("setInSidebar", "postDetails");
+      }
     },
 
     reset() {
@@ -121,11 +123,7 @@ export default {
           <button type="submit" className="button is-link">Save</button>
         </div>
         <div class="control">
-          <button
-            @click="closeSidebar"
-            type="reset"
-            class="button is-link is-light"
-          >
+          <button @click="cancel" type="reset" class="button is-link is-light">
             Cancel
           </button>
         </div>
