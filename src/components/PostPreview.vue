@@ -1,4 +1,6 @@
 <script>
+import { deletePost } from '@/api/post';
+
 export default {
   name: "PostPreview",
   computed: {
@@ -12,6 +14,16 @@ export default {
   methods: {
     editPost() {
       this.$store.commit("setInSidebar", "updatingPost");
+    },
+
+    deletingPost() {
+      const postId = this.currentPost.id;
+
+      deletePost(postId).then(() => {
+        this.$store.commit("setInSidebar", "");
+        this.$store.commit("deletePost", postId);
+        this.$store.commit("setCurrentPost", null);
+      });
     },
   },
 };
@@ -30,7 +42,7 @@ export default {
             <i className="fas fa-pen-to-square"></i>
           </span>
         </button>
-        <button type="button">
+        <button type="button" @click="deletingPost">
           <span
             className="icon is-small is-right has-text-danger is-clickable ml-3"
           >

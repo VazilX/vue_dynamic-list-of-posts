@@ -12,6 +12,10 @@ export const createPosts = ({ body, title, userId }) => {
   return client.post("/posts", { body, title, userId });
 };
 
-export const updatePost = ({ body, title, postId}) => {
+export const updatePost = ({ body, title, postId }) => {
   return client.patch(`/posts/${postId}`, { body, title });
+};
+
+export const deletePost = (postId) => {
+  return client.delete(`https://mate.academy/students-api/posts/${postId}`);
 };

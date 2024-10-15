@@ -25,10 +25,18 @@ const store = createStore({
 
     updatePost(state, newPost) {
       const index = state.postList.findIndex(
-        (post) => post.id === state.currentPost.id
+        (post) => post.id === newPost.id
       );
 
       state.postList.splice(index, 1, newPost);
+    },
+
+    deletePost(state, postId) {
+      const index = state.postList.findIndex(
+        (post) => post.id === postId
+      );
+
+      state.postList.splice(index, 1);
     },
 
     setInSidebar(state, newStatus) {
