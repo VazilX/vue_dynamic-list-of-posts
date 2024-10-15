@@ -17,9 +17,6 @@ export default {
       errorMassage: "",
     };
   },
-
-  computed: {},
-
   mounted() {
     this.isLoaded = true;
 
@@ -35,6 +32,11 @@ export default {
         this.isLoaded = false;
       });
   },
+  computed: {
+    postList() {
+      return this.$store.state.postList;
+    },
+  },
   methods: {
     openPost(post) {
       this.$store.commit("setCurrentPost", post);
@@ -42,7 +44,7 @@ export default {
     },
 
     closePost() {
-      this.$store.commit('setCurrentPost', null)
+      this.$store.commit("setCurrentPost", null);
       this.$store.commit("setInSidebar", "");
     },
   },
@@ -67,7 +69,7 @@ export default {
         <PostLoader v-if="isLoaded" />
 
         <template v-else-if="errorMassage === ''">
-          <p v-if="$store.state.postList.length === 0">No posts yet.</p>
+          <p v-if="postList.length === 0">No posts yet.</p>
           <table
             v-else
             class="table is-fullwidth is-striped is-hoverable is-narrow"
@@ -80,7 +82,7 @@ export default {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="post of $store.state.postList" :key="post.id">
+              <tr v-for="post of postList" :key="post.id">
                 <td>{{ post.id }}</td>
                 <td>{{ post.title }}</td>
                 <td class="has-text-right is-vcentered">

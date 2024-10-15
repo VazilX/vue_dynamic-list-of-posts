@@ -1,7 +1,7 @@
 <script>
 import TextAreaField from "./TextAreaField.vue";
 import InputField from "./InputField.vue";
-import { createPosts } from "@/api/post";
+import { createPosts, updatePost } from "@/api/post";
 
 export default {
   name: "AddPost",
@@ -29,13 +29,13 @@ export default {
         body: this.newPostText,
         title: this.newPostTitle,
         userId: 1546,
-        postId: this.currentPost?.id,
+        postId: this.$store.state.currentPost?.id,
       };
 
       if (this.$store.state.inSidebar === "creatingPost") {
         this.creatingPost(sendData);
       } else {
-        this.updatePost(sendData);
+        this.updatingPost(sendData);
       }
     },
 
@@ -47,7 +47,13 @@ export default {
       });
     },
 
-    updatePost(e) {},
+    updatingPost(e) {
+      updatePost(e).then(({ data }) => {
+        this.$store.commit("updatePost", data);
+        this.$store.commit("setCurrentPost", data);
+        this.$store.commit("setInSidebar", "postDetails");
+      });
+    },
 
     validation() {
       let hasErr = false;

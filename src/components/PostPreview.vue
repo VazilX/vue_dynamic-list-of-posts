@@ -9,6 +9,11 @@ export default {
   data() {
     return {};
   },
+  methods: {
+    editPost() {
+      this.$store.commit("setInSidebar", "updatingPost");
+    },
+  },
 };
 </script>
 
@@ -19,7 +24,8 @@ export default {
     >
       <h2>{{ `#${currentPost.id}: ${currentPost.title}` }}</h2>
       <div className="is-flex">
-        <button type="button" @click="">
+        <!-- TODO make adding & deleting post-->
+        <button type="button" @click="editPost">
           <span className="icon is-small is-right is-clickable">
             <i className="fas fa-pen-to-square"></i>
           </span>

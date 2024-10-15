@@ -23,6 +23,14 @@ const store = createStore({
       }
     },
 
+    updatePost(state, newPost) {
+      const index = state.postList.findIndex(
+        (post) => post.id === state.currentPost.id
+      );
+
+      state.postList.splice(index, 1, newPost);
+    },
+
     setInSidebar(state, newStatus) {
       state.inSidebar = newStatus;
     },

@@ -1,5 +1,5 @@
 <script>
-import { createPosts, updatePost } from "./api/post";
+import { createPosts } from "./api/post";
 import AddPost from "./components/AddPost.vue";
 import PostDetails from "./components/PostDetails.vue";
 import PostsList from "./components/PostsList.vue";
@@ -40,17 +40,6 @@ export default {
       } else {
         this.inSidebar = "";
       }
-    },
-
-    creatingPost(e) {
-      createPosts(e).then(({ data }) => {
-        this.postList.push(data);
-        this.clickCurrentPost(data);
-      });
-    },
-
-    updatingPost() {
-      console.log("VVVVVVVVVVVV");
     },
   },
 };
