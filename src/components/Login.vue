@@ -1,5 +1,5 @@
 <script>
-import { getUserByEmail } from "@/api/users";
+import { getUserByEmail, registrationUser } from "@/api/users";
 import { setLocaleStorage } from "@/utils/setLocaleStorage";
 import NeedToRegister from "./NeedToRegister.vue";
 
@@ -25,22 +25,37 @@ export default {
 
       this.isLoading = true;
 
-      getUserByEmail(this.email)
-        .then(({ data }) => {
-          if (data.length !== 0) {
-            setLocaleStorage("user", data[0]);
-            this.$store.commit("setUserId", data[0].id);
+      if (!this.needRegistration) {
+        getUserByEmail(this.email)
+          .then(({ data }) => {
+            if (data.length !== 0) {
+              setLocaleStorage("user", data[0]);
+              this.$store.commit("setUserId", data[0].id);
+              this.$emit("login");
+            } else {
+              this.needRegistration = true;
+            }
+          })
+          .catch(() => {
+            this.errMessage = "Ops, something went wrong";
+          })
+          .finally(() => {
+            this.isLoading = false;
+          });
+      } else {
+        registrationUser(this.email, this.name)
+          .then(({ data }) => {
+            setLocaleStorage("user", data);
+            this.$store.commit("setUserId", data.id);
             this.$emit("login");
-          } else {
+          })
+          .catch(() => {
+            this.errMessageRegistration = "Ops, something went wrong";
+          })
+          .finally(() => {
             this.needRegistration = true;
-          }
-        })
-        .catch(() => {
-          this.errMessage = "Ops, something went wrong";
-        })
-        .finally(() => {
-          this.isLoading = false;
-        });
+          });
+      }
     },
 
     validation() {
