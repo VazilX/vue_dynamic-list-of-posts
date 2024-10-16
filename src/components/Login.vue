@@ -1,23 +1,60 @@
 <script>
 import { getUserByEmail } from "@/api/users";
 import { setLocaleStorage } from "@/utils/setLocaleStorage";
+import NeedToRegister from "./NeedToRegister.vue";
 
 export default {
   name: "Login",
-  emits: ['gettingUser'],
+  components: {
+    NeedToRegister,
+  },
+  emits: ["login"],
   data() {
     return {
       email: "",
+      name: "",
+      errMessage: "",
+      isLoading: false,
+      needRegistration: false,
+      errMessageRegistration: "",
     };
   },
   methods: {
     login() {
-      getUserByEmail(this.email).then(({ data }) => {
-        if (data.length !== 0) {
-          setLocaleStorage('user', data[0])
-          this.$emit('gettingUser', data[0].id)
-        }
-      });
+      if (!this.validation()) return;
+
+      this.isLoading = true;
+
+      getUserByEmail(this.email)
+        .then(({ data }) => {
+          if (data.length !== 0) {
+            setLocaleStorage("user", data[0]);
+            this.$store.commit("setUserId", data[0].id);
+            this.$emit("login");
+          } else {
+            this.needRegistration = true;
+          }
+        })
+        .catch(() => {
+          this.errMessage = "Ops, something went wrong";
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
+    },
+
+    validation() {
+      if (this.email === "") {
+        this.errMessage = "Email is required";
+        return false;
+      }
+
+      if (this.needRegistration && this.name === "") {
+        this.errMessageRegistration = "Name is required";
+        return false;
+      }
+
+      return true;
     },
   },
 };
@@ -34,6 +71,9 @@ export default {
         <div class="control has-icons-left">
           <input
             v-model="email"
+            :class="{ 'is-danger': errMessage }"
+            @input="errMessage = ''"
+            :disabled="needRegistration"
             type="email"
             id="user-email"
             name="email"
@@ -43,15 +83,30 @@ export default {
           />
 
           <span class="icon is-small is-left">
-            <i class="fas fa-envelope" />
+            <i class="fas fa-envelope"></i>
           </span>
         </div>
 
-        <p class="help is-danger">error message</p>
+        <p class="help" :class="{ 'is-danger': errMessage }">
+          {{ errMessage }}
+        </p>
       </div>
 
+      <NeedToRegister
+        v-if="needRegistration"
+        v-model="name"
+        :errMessage="errMessageRegistration"
+        @onInput="errMessageRegistration = ''"
+      />
+
       <div class="field">
-        <button type="submit" class="button is-primary">Login</button>
+        <button
+          type="submit"
+          class="button is-primary"
+          :class="{ 'is-loading': isLoading }"
+        >
+          Login
+        </button>
       </div>
     </form>
   </section>

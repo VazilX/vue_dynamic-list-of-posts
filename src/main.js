@@ -50,7 +50,6 @@ const store = createStore({
 
     setUserId(state, newUserId) {
       state.userId = newUserId;
-      console.log('AAAAAAAAAAAAAAAAAA');
     },
   },
 });

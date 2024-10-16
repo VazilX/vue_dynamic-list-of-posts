@@ -1,5 +1,5 @@
 <script>
-import { getUser } from "./api/users";
+import { getUserByEmail } from "./api/users";
 import { getLocaleStorage } from "./utils/getLocaleStorage";
 import Login from "./components/Login.vue";
 import MainContent from "./components/MainContent.vue";
@@ -13,31 +13,29 @@ export default {
   },
   data() {
     return {
-      needRegistration: true,
+      needLogin: true,
     };
   },
   beforeMount() {
     const user = getLocaleStorage("user");
 
     if (user) {
-      this.gettingUser(user.id);
+      this.gettingUser(user.email);
     } else {
-      this.needRegistration = true;
+      this.needLogin = true;
     }
   },
 
   methods: {
-    gettingUser(id) {
-      getUser(id)
+    gettingUser(email) {
+      getUserByEmail(email)
         .then(({ data }) => {
-          if (data) {
-            this.$store.commit("setUserId", data.id);
-            this.needRegistration = false;
-          } else {
-            this.needRegistration = true;
+          if (data.length !== 0) {
+            this.$store.commit("setUserId", data[0].id);
+            this.needLogin = false;
           }
         })
-        .catch((err) => {
+        .catch(() => {
           console.log("err", err);
         });
     },
@@ -46,7 +44,7 @@ export default {
 </script>
 
 <template>
-  <Login v-if="needRegistration" @gettingUser="gettingUser" />
+  <Login v-if="needLogin" @login="needLogin = false" />
   <MainContent v-else />
 </template>
 

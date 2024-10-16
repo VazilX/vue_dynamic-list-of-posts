@@ -21,9 +21,6 @@ export default {
   mounted() {
     this.isLoaded = true;
 
-    console.log("this.$store.state.userId", this.$store.state.userId);
-    console.log("this.$store.state", this.$store.state);
-
     getUserPosts(this.$store.state.userId)
       .then(({ data }) => {
         this.$store.commit("addPostList", data);
