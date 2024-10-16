@@ -20,41 +20,13 @@ export default {
     };
   },
   methods: {
-    login() {
+    submit() {
       if (!this.validation()) return;
 
-      this.isLoading = true;
-
       if (!this.needRegistration) {
-        getUserByEmail(this.email)
-          .then(({ data }) => {
-            if (data.length !== 0) {
-              setLocaleStorage("user", data[0]);
-              this.$store.commit("setUserId", data[0].id);
-              this.$emit("login");
-            } else {
-              this.needRegistration = true;
-            }
-          })
-          .catch(() => {
-            this.errMessage = "Ops, something went wrong";
-          })
-          .finally(() => {
-            this.isLoading = false;
-          });
+        this.login();
       } else {
-        registrationUser(this.email, this.name)
-          .then(({ data }) => {
-            setLocaleStorage("user", data);
-            this.$store.commit("setUserId", data.id);
-            this.$emit("login");
-          })
-          .catch(() => {
-            this.errMessageRegistration = "Ops, something went wrong";
-          })
-          .finally(() => {
-            this.needRegistration = true;
-          });
+        this.registration();
       }
     },
 
@@ -71,13 +43,51 @@ export default {
 
       return true;
     },
+
+    login() {
+      this.isLoading = true;
+
+      getUserByEmail(this.email)
+        .then(({ data }) => {
+          if (data.length !== 0) {
+            setLocaleStorage("user", data[0]);
+            this.$store.commit("setUserId", data[0].id);
+            this.$emit("login");
+          } else {
+            this.needRegistration = true;
+          }
+        })
+        .catch(() => {
+          this.errMessage = "Ops, something went wrong";
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
+    },
+
+    registration() {
+      this.isLoading = true;
+
+      registrationUser(this.email, this.name)
+        .then(({ data }) => {
+          setLocaleStorage("user", data);
+          this.$store.commit("setUserId", data.id);
+          this.$emit("login");
+        })
+        .catch(() => {
+          this.errMessageRegistration = "Ops, something went wrong";
+        })
+        .finally(() => {
+          this.needRegistration = true;
+        });
+    },
   },
 };
 </script>
 
 <template>
   <section class="container is-flex is-justify-content-center">
-    <form @submit.prevent="login" class="box mt-5">
+    <form @submit.prevent="submit" class="box mt-5">
       <h1 class="title is-3">You need to register"</h1>
 
       <div class="field">

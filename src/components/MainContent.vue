@@ -1,5 +1,6 @@
 <script>
 import AddPost from "./AddPost.vue";
+import Header from "./Header.vue";
 import PostDetails from "./PostDetails.vue";
 import PostsList from "./PostsList.vue";
 import Sidebar from "./Sidebar.vue";
@@ -12,7 +13,9 @@ export default {
     Sidebar,
     AddPost,
     PostDetails,
+    Header,
   },
+  emits: ['logout'],
   data() {
     return {};
   },
@@ -47,6 +50,7 @@ export default {
 </script>
 
 <template>
+  <Header @logout="$emit('logout')" />
   <main class="section">
     <div class="container">
       <div class="tile is-ancestor custom-container">

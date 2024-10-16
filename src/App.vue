@@ -3,7 +3,6 @@ import { getUserByEmail } from "./api/users";
 import { getLocaleStorage } from "./utils/getLocaleStorage";
 import Login from "./components/Login.vue";
 import MainContent from "./components/MainContent.vue";
-import { nextTick } from "vue";
 
 export default {
   name: "App",
@@ -45,7 +44,7 @@ export default {
 
 <template>
   <Login v-if="needLogin" @login="needLogin = false" />
-  <MainContent v-else />
+  <MainContent v-else @logout="needLogin = true"/>
 </template>
 
 <style></style>
