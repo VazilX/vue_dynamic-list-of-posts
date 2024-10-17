@@ -1,7 +1,7 @@
 <script>
 import TextAreaField from "./TextAreaField.vue";
 import InputField from "./InputField.vue";
-import { createPosts, updatePost } from "@/api/post";
+import { createPost, updatePost } from "@/api/post";
 
 export default {
   name: "AddPost",
@@ -40,7 +40,7 @@ export default {
     },
 
     creatingPost(e) {
-      createPosts(e).then(({ data }) => {
+      createPost(e).then(({ data }) => {
         this.$store.commit("addPostList", data);
         this.$store.commit("setCurrentPost", data);
         this.$store.commit("setInSidebar", "postDetails");

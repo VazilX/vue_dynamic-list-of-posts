@@ -4,7 +4,9 @@ export const getLocaleStorage = (key) => {
   if (value) {
     try {
       return JSON.parse(value);
-    } catch {
+    } catch (err) {
+      console.error(err);
+
       return null;
     }
   }

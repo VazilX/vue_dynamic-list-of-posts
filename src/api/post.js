@@ -8,7 +8,7 @@ export const getPosts = () => {
   return client.get("/posts");
 };
 
-export const createPosts = ({ body, title, userId }) => {
+export const createPost = ({ body, title, userId }) => {
   return client.post("/posts", { body, title, userId });
 };
 
@@ -17,5 +17,5 @@ export const updatePost = ({ body, title, postId }) => {
 };
 
 export const deletePost = (postId) => {
-  return client.delete(`https://mate.academy/students-api/posts/${postId}`);
+  return client.delete(`/posts/${postId}`);
 };

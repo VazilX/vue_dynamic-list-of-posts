@@ -25,17 +25,17 @@ const store = createStore({
     },
 
     updatePost(state, newPost) {
-      const index = state.postList.findIndex(
-        (post) => post.id === newPost.id
-      );
+      const index = state.postList.findIndex((post) => post.id === newPost.id);
+
+      if (index === -1) return;
 
       state.postList.splice(index, 1, newPost);
     },
 
     deletePost(state, postId) {
-      const index = state.postList.findIndex(
-        (post) => post.id === postId
-      );
+      const index = state.postList.findIndex((post) => post.id === postId);
+
+      if (index === -1) return;
 
       state.postList.splice(index, 1);
     },

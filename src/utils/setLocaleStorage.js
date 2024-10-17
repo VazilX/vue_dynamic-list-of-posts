@@ -3,5 +3,7 @@ export const setLocaleStorage = (key, data) => {
     const jsonData = JSON.stringify(data);
 
     window.localStorage.setItem(key, jsonData);
-  } catch (error) {}
+  } catch (err) {
+    console.error(err);
+  }
 };
