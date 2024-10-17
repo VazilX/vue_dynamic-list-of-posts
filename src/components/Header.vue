@@ -17,6 +17,7 @@ export default {
     logout() {
       window.localStorage.removeItem("user");
       this.$store.commit("setUserId", null);
+      this.$store.commit("addPostList", []);
       this.$emit("logout");
     },
   },

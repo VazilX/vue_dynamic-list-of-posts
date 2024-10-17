@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "homepage": "https://VazilX.github.io/vue_dynamic-list-of-posts",
+  "homepage": "https://VazilX.github.io/vue_dynamic-list-of-posts_portfolio",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

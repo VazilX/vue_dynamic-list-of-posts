@@ -18,7 +18,7 @@ const store = createStore({
   mutations: {
     addPostList(state, posts) {
       if (Array.isArray(posts)) {
-        state.postList = [...state.postList, ...posts];
+        state.postList = [...posts];
       } else {
         state.postList.push(posts);
       }
